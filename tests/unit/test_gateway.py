@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 import pytest
-from tests.fixtures.mock_provider import MockProvider
+
 from luna.models.gateway import ModelGateway
 from luna.models.schema import CompletionRequest, Message, Usage
 from luna.providers.base import ProviderBase
-
+from tests.fixtures.mock_provider import MockProvider
 
 
 @pytest.mark.asyncio

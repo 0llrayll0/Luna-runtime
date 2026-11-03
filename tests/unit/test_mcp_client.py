@@ -2,9 +2,9 @@ import sys
 
 import pytest
 
-from luna.mcp.client import MCPClient
+from luna.mcp.client import MCPClient, MCPError
 
-FAKE = [sys.executable, "/tmp/opencode/fake_mcp_server.py"]
+FAKE = [sys.executable, "tests/fixtures/fake_mcp_server.py"]
 
 
 @pytest.mark.asyncio
@@ -47,6 +47,6 @@ async def test_list_and_read_resources():
 @pytest.mark.asyncio
 async def test_timeout():
     client = MCPClient(command=sys.executable, args=["-c", "import time; time.sleep(10)"], timeout=0.2)
-    with pytest.raises(BaseException):
+    with pytest.raises(MCPError):
         await client.initialize()
     await client.close()

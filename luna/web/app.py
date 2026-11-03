@@ -697,7 +697,7 @@ def create_app(config_path=None) -> Flask:
                 pid = str(raw_id).strip() if raw_id is not None else ""
                 if not pid:
                     # allow rows identified only by other fields
-                    if not any(str((vals[i] if i < len(vals) else "")).strip() for vals in (types, bases, keys, envs)):
+                    if not any(str(vals[i] if i < len(vals) else "").strip() for vals in (types, bases, keys, envs)):
                         continue
                     pid = f"provider-{i+1}"
                 t = types[i] if i < len(types) else ""

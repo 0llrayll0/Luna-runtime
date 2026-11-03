@@ -166,7 +166,7 @@ class PermissionEngine:
                 tool=tool,
                 args=dict(args),
                 level=next(iter(levels & HIGH_RISK)) if (levels & HIGH_RISK) else (next(iter(levels)) if levels else None),
-                reason=f"approval required for {sorted(l.value for l in (levels & HIGH_RISK)) or sorted(l.value for l in levels)}",
+                reason=f"approval required for {sorted(perm.value for perm in (levels & HIGH_RISK)) or sorted(perm.value for perm in levels)}",
             )
             self.approvals[req.id] = req
             return PendingApproval(request=req, reason=req.reason)

@@ -27,4 +27,7 @@ __all__ = [
     "TerminalRunTool",
     "GitStatusTool",
     "GitCommitTool",
+    "register_fs_defaults",
+    "register_git_defaults",
+    "register_terminal_defaults",
 ]
