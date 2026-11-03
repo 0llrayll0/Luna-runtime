@@ -1,0 +1,18 @@
+services:
+  luna:
+    build: .
+    image: luna-runtime:latest
+    container_name: luna-runtime
+    ports:
+      - "8000:8000"
+    volumes:
+      - ${HOME}/.luna:/data/.luna
+    environment:
+      - LUNA_CONFIG=/data/.luna/config.yaml
+    networks:
+      - luna-net
+    restart: unless-stopped
+
+networks:
+  luna-net:
+    driver: bridge

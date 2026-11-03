@@ -1,0 +1,91 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - banner [ref=f2e3]:
+      - generic [ref=f2e4]:
+        - generic [ref=f2e5]: L
+        - generic [ref=f2e6]:
+          - heading "Luna Configuration" [level=1] [ref=f2e7]
+          - generic [ref=f2e8]: Painel de configuração do runtime · edição segura, sem XSS
+      - generic [ref=f2e9]:
+        - button "Abrir launcher de aplicativos" [ref=f2e10] [cursor=pointer]
+        - button "Alternar tema" [ref=f2e21] [cursor=pointer]: Tema claro
+        - link "Health" [ref=f2e22] [cursor=pointer]:
+          - /url: /health
+    - generic [ref=f2e23]:
+      - generic [ref=f2e24]:
+        - strong [ref=f2e26]: Config
+        - generic [ref=f2e27]: /home/line/.luna/config.yaml
+      - generic [ref=f2e28]:
+        - strong [ref=f2e29]: Providers
+        - generic [ref=f2e30]: "1"
+    - generic [ref=f2e31]:
+      - group [ref=f2e33]:
+        - generic "RT Runtime" [ref=f2e34] [cursor=pointer]:
+          - generic [ref=f2e35]:
+            - generic [ref=f2e36]: RT
+            - text: Runtime
+        - generic [ref=f2e39]:
+          - generic [ref=f2e40]:
+            - generic [ref=f2e41]:
+              - generic [ref=f2e42]: Nome
+              - textbox "Nome" [ref=f2e43]: luna
+            - generic [ref=f2e44]:
+              - generic [ref=f2e45]: Ambiente
+              - textbox "Ambiente" [ref=f2e46]: local
+          - generic [ref=f2e47]:
+            - checkbox [ref=f2e48]
+            - generic [ref=f2e49]: Debug ativado
+      - group [ref=f2e51]:
+        - generic "MD Models" [ref=f2e52] [cursor=pointer]:
+          - generic [ref=f2e53]:
+            - generic [ref=f2e54]: MD
+            - text: Models
+        - generic [ref=f2e57]:
+          - generic [ref=f2e58]:
+            - generic [ref=f2e59]: Modelo padrao
+            - textbox "Modelo padrao" [ref=f2e60]:
+              - /placeholder: ollama/llama3
+              - text: ollama/qwen3-coder:30b
+          - generic [ref=f2e61]:
+            - generic [ref=f2e62]: Providers
+            - generic [ref=f2e64]:
+              - textbox "ID/nome" [ref=f2e65]: ollama
+              - textbox "type (ollama/openai/...)" [ref=f2e66]
+              - textbox "base_url" [ref=f2e67]
+              - textbox "api_key" [ref=f2e68]
+              - textbox "api_key_env" [ref=f2e69]
+              - button "Remover" [ref=f2e70] [cursor=pointer]
+            - button "Adicionar provedor" [ref=f2e71] [cursor=pointer]
+            - generic [ref=f2e72]: "Cada linha: ID/nome, type, base_url, api_key, api_key_env."
+      - group [ref=f2e74]:
+        - generic "EX Execution" [ref=f2e75] [cursor=pointer]:
+          - generic [ref=f2e76]:
+            - generic [ref=f2e77]: EX
+            - text: Execution
+        - generic [ref=f2e80]:
+          - generic [ref=f2e81]:
+            - generic [ref=f2e82]:
+              - generic [ref=f2e83]: Max steps
+              - spinbutton "Max steps" [ref=f2e84]: "100"
+            - generic [ref=f2e85]:
+              - generic [ref=f2e86]: Timeout (s)
+              - spinbutton "Timeout (s)" [ref=f2e87]: "60"
+          - generic [ref=f2e88]:
+            - generic [ref=f2e89]: Workdir
+            - textbox "Workdir" [ref=f2e90]:
+              - /placeholder: /tmp/work
+      - group [ref=f2e92]:
+        - generic "MM Memory" [ref=f2e93] [cursor=pointer]:
+          - generic [ref=f2e94]:
+            - generic [ref=f2e95]: MM
+            - text: Memory
+      - group [ref=f2e99]:
+        - generic "AG Agents" [ref=f2e100] [cursor=pointer]:
+          - generic [ref=f2e101]:
+            - generic [ref=f2e102]: AG
+            - text: Agents
+      - generic [ref=f2e105]:
+        - button "Resetar" [ref=f2e106] [cursor=pointer]
+        - button "Salvar configuracao" [ref=f2e107] [cursor=pointer]
+  - status [ref=f2e108]:
+    - button "Fechar" [ref=f2e109] [cursor=pointer]: X

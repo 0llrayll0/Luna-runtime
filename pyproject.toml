@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "luna-runtime"
+version = "0.1.0"
+description = "Luna Runtime — foundation phase 1 skeleton"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+  "pydantic>=2",
+  "fastapi",
+  "uvicorn",
+  "httpx",
+  "sqlalchemy",
+  "aiosqlite",
+  "greenlet",
+  "typer",
+  "rich",
+  "pyyaml",
+  "python-dotenv",
+  "flask",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-asyncio",
+  "ruff",
+]
+
+[project.scripts]
+luna = "luna.cli.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["luna"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+[tool.ruff.lint]
+extend-ignore = ["E501"]
+
+select = ["E", "F", "I", "UP", "B", "SIM"]
