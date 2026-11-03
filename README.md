@@ -6,6 +6,12 @@ Infraestrutura open source para execução, gerenciamento e orquestração de ag
 
 > Princípio central: **o modelo decide, o runtime controla, as ferramentas executam.**
 
+> **Escopo:** o `luna-runtime` é **apenas uma das frações** das ferramentas do
+> ecossistema Luna original. Ele cobre a camada de *runtime* (execução,
+> agentes, modelos, permissões, sessões, MCP). Outras partes do ecossistema Luna
+> (memória persistente, avatar/persona, voz, navegação no browser,
+> orquestração avançada, etc.) vivem fora deste repositório.
+
 Status atual: **alpha (0.1.0)**, voltada a desenvolvedores. Não é produto pronto para produção.
 
 ## 1. Visão Geral
