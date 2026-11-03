@@ -30,6 +30,10 @@ class LunaRuntime:
         self.provider_status: dict[str, str] = {}
         self._register_providers_from_config()
         try:
+            self.gateway.timeout = max(getattr(self.gateway, "timeout", 30.0) or 30.0, float(getattr(getattr(self.config, "execution", None), "timeout_seconds", 0) or 0))
+        except Exception:
+            pass
+        try:
             from luna.tools.filesystem import register_fs_defaults
             from luna.tools.git import register_git_defaults
             from luna.tools.terminal import register_terminal_defaults
@@ -49,6 +53,9 @@ class LunaRuntime:
         self.providers[name] = provider
         with contextlib.suppress(Exception):
             self.gateway.register_provider(provider)
+        ptimeout = getattr(provider, "timeout", None)
+        if isinstance(ptimeout, (int, float)):
+            self.gateway.timeout = max(getattr(self.gateway, "timeout", 30.0) or 30.0, float(ptimeout))
 
     async def register_provider_async(self, name: str, provider: Any) -> None:
         self.providers[name] = provider
@@ -124,14 +131,16 @@ class LunaRuntime:
             if not name:
                 name = "ollama"
             base_url = spec.get("base_url") or spec.get("url") or "http://localhost:11434"
+            timeout = spec.get("timeout", 30.0)
             from luna.providers.ollama import OllamaProvider
 
-            provider = OllamaProvider(base_url=str(base_url), name=name)
+            provider = OllamaProvider(base_url=str(base_url), name=name, timeout=float(timeout or 30.0))
             return name, provider
         if kind in ("openai", "openai-compatible", "openai_compat", "compatible"):
             if not name:
                 name = "openai-compatible"
             base_url = spec.get("base_url") or spec.get("url") or os.getenv("OPENAI_BASE_URL", "https://api.openai.com")
+            timeout = spec.get("timeout", 30.0)
             api_key = spec.get("api_key")
             api_key_env = spec.get("api_key_env") or spec.get("env")
             if api_key is None and isinstance(api_key_env, str):
@@ -143,7 +152,7 @@ class LunaRuntime:
                 api_key = os.getenv("OPENAI_API_KEY", None)
             from luna.providers.openai_compat import OpenAICompatibleProvider
 
-            provider = OpenAICompatibleProvider(base_url=str(base_url), name=name, api_key=api_key)
+            provider = OpenAICompatibleProvider(base_url=str(base_url), name=name, api_key=api_key, timeout=float(timeout or 30.0))
             return name, provider
         if kind == "anthropic":
             self.provider_status[name or "anthropic"] = "not available (not implemented)"
@@ -221,6 +230,10 @@ class LunaRuntime:
             pass
         self.provider_status.clear()
         self._register_providers_from_config()
+        try:
+            self.gateway.timeout = max(getattr(self.gateway, "timeout", 30.0) or 30.0, float(getattr(getattr(self.config, "execution", None), "timeout_seconds", 0) or 0))
+        except Exception:
+            pass
         await self.event_bus.emit(
             Event(type="providers.loaded", payload={"providers": list(self.providers.keys())})
         )

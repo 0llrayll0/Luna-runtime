@@ -6,10 +6,11 @@ from pathlib import Path
 
 import typer
 import yaml
+import httpx
 from rich.console import Console
 from rich.table import Table
 
-from luna.core.config import ModelsSettings, Settings, _resolve_path, load_config
+from luna.core.config import ExecutionSettings, ModelsSettings, Settings, _resolve_path, load_config
 from luna.runtime.core import LunaRuntime
 
 app = typer.Typer(help="Luna Runtime CLI")
@@ -29,7 +30,11 @@ app.add_typer(session_app, name="session")
 
 
 DEFAULT_TEMPLATE = Settings(
-    models=ModelsSettings(default="ollama/qwen3-coder:30b", providers=["ollama"])
+    models=ModelsSettings(
+        default="ollama/qwen3-coder:30b",
+        providers=[{"name": "ollama", "type": "ollama", "base_url": "http://localhost:11434", "timeout": 180}],
+    ),
+    execution=ExecutionSettings(timeout_seconds=60),
 ).model_dump()
 
 
@@ -104,6 +109,32 @@ def agent_create(
     console.print(f"created agent: {agent.config.name}")
 
 
+@agent_app.command("run")
+def agent_run(task: str, agent: str | None = typer.Option(None, "--agent")) -> None:
+    """Run a task with an agent."""
+    import asyncio
+
+    rt = get_runtime()
+    chosen = rt.agents.get(agent) if agent is not None else None
+    if chosen is None and rt.agents:
+        chosen = next(iter(rt.agents.values()))
+    if chosen is None:
+        from luna.agents.schema import AgentConfig
+
+        chosen = rt.create_agent(AgentConfig(name="default", model=rt.config.models.default))
+    try:
+        result = asyncio.run(chosen.run(task))
+    except (TimeoutError, httpx.TimeoutException) as exc:  # noqa: BLE001
+        console.print("model cold-load exceeded timeout; aumente timeout no config ou pré-carregue o modelo no ollama")
+        raise typer.Exit(code=1) from None
+    except Exception as exc:  # noqa: BLE001
+        console.print(f"[red]error: {exc}[/red]")
+        raise typer.Exit(code=1) from None
+    console.print(result.output or "")
+    if result.status != "completed":
+        console.print(f"status: {result.status}")
+
+
 @agent_app.command("inspect")
 def agent_inspect(agent_id: str) -> None:
     rt = get_runtime()
@@ -171,7 +202,8 @@ def model_test(model_ref: str) -> None:
         console.print(f"model {model_ref}: {'ok' if ok else 'unreachable'}")
         if not ok:
             raise typer.Exit(code=1) from None
-    except Exception as exc:
+    except (TimeoutError, httpx.TimeoutException, httpx.ConnectError, Exception) as exc:  # noqa: BLE001
+        console.print(f"model {model_ref}: unreachable")
         console.print(f"[red]error: {exc}[/red]")
         raise typer.Exit(code=1) from None
 
@@ -293,7 +325,14 @@ def run(task: str, agent: str | None = typer.Option(None, "--agent")) -> None:
         from luna.agents.schema import AgentConfig
 
         chosen = rt.create_agent(AgentConfig(name="default", model=rt.config.models.default))
-    result = asyncio.run(chosen.run(task))
+    try:
+        result = asyncio.run(chosen.run(task))
+    except (TimeoutError, httpx.TimeoutException) as exc:  # noqa: BLE001
+        console.print("model cold-load exceeded timeout; aumente timeout no config ou pré-carregue o modelo no ollama")
+        raise typer.Exit(code=1) from None
+    except Exception as exc:  # noqa: BLE001
+        console.print(f"[red]error: {exc}[/red]")
+        raise typer.Exit(code=1) from None
     console.print(result.output or "")
     if result.status != "completed":
         console.print(f"status: {result.status}")
